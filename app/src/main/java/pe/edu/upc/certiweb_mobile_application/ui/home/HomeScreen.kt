@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 // ArrowBack como filled (evitamos import AutoMirrored por compatibilidad de BOM)
 import androidx.compose.material.icons.filled.ArrowBack
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onLogout: () -> Unit = {}) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -54,7 +55,10 @@ fun HomeScreen() {
                     drawerTonalElevation = 2.dp
                 ) {
                     DrawerHeader(onClose = { scope.launch { drawerState.close() } })
-                    DrawerContent()
+                    DrawerContent(onLogout = {
+                        onLogout()
+                        scope.launch { drawerState.close() }
+                    })
                 }
             },
             scrimColor = Color.Black.copy(alpha = 0.2f)
@@ -414,7 +418,7 @@ private fun DrawerHeader(onClose: () -> Unit) {
 }
 
 @Composable
-private fun DrawerContent() {
+private fun DrawerContent(onLogout: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(Modifier.height(8.dp))
         SectionTitle("NAVEGACIÓN")
@@ -460,7 +464,7 @@ private fun DrawerContent() {
 
         HorizontalDivider(color = DividerLight, modifier = Modifier.padding(vertical = 12.dp))
 
-        LogoutItem()
+        LogoutItem(onLogout = onLogout)
         Spacer(Modifier.height(12.dp))
     }
 }
@@ -522,14 +526,15 @@ private fun LanguageToggle() {
 }
 
 @Composable
-private fun LogoutItem() {
+private fun LogoutItem(onLogout: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFFFFEEEE))
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable { onLogout() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

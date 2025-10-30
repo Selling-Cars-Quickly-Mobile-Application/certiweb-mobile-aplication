@@ -18,6 +18,12 @@ import pe.edu.upc.certiweb_mobile_application.ui.home.HomeScreen
 import pe.edu.upc.certiweb_mobile_application.ui.auth.AuthViewModel
 import pe.edu.upc.certiweb_mobile_application.ui.auth.LoginScreen
 import pe.edu.upc.certiweb_mobile_application.ui.auth.RegisterScreen
+import pe.edu.upc.certiweb_mobile_application.ui.certifiedcars.CertifiedCarsScreen
+import pe.edu.upc.certiweb_mobile_application.ui.certifycar.CertifyCarScreen
+import pe.edu.upc.certiweb_mobile_application.ui.profile.ProfileScreen
+import pe.edu.upc.certiweb_mobile_application.ui.history.HistoryScreen
+import pe.edu.upc.certiweb_mobile_application.ui.support.SupportScreen
+import pe.edu.upc.certiweb_mobile_application.ui.termsofuse.TermsOfUseScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,12 +56,18 @@ fun AppNav() {
             }, onNavigateLogin = { navController.popBackStack() })
         }
         composable("home") {
-            HomeScreen(onLogout = {
+            HomeScreen(navController = navController, onLogout = {
                 vm.logout()
                 navController.navigate("login") {
                     popUpTo("home") { inclusive = true }
                 }
             })
         }
+        composable("certifiedCars") { CertifiedCarsScreen() }
+        composable("certifyCar") { CertifyCarScreen() }
+        composable("profile") { ProfileScreen() }
+        composable("history") { HistoryScreen() }
+        composable("support") { SupportScreen() }
+        composable("termsOfUse") { TermsOfUseScreen() }
     }
 }

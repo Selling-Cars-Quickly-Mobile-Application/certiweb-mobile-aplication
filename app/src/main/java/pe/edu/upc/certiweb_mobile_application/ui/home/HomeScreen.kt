@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Article
@@ -31,17 +31,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.navigation.NavHostController
 import pe.edu.upc.certiweb_mobile_application.ui.theme.*
 import kotlinx.coroutines.launch
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onLogout: () -> Unit = {}) {
+fun HomeScreen(navController: NavHostController, onLogout: () -> Unit = {}) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -54,11 +57,19 @@ fun HomeScreen(onLogout: () -> Unit = {}) {
                     drawerContainerColor = CardBackground,
                     drawerTonalElevation = 2.dp
                 ) {
-                    DrawerHeader(onClose = { scope.launch { drawerState.close() } })
-                    DrawerContent(onLogout = {
-                        onLogout()
-                        scope.launch { drawerState.close() }
-                    })
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        DrawerHeader(onClose = { scope.launch { drawerState.close() } })
+                        DrawerContent(
+                            onNavigate = { route ->
+                                navController.navigate(route)
+                                scope.launch { drawerState.close() }
+                            },
+                            onLogout = {
+                                onLogout()
+                                scope.launch { drawerState.close() }
+                            }
+                        )
+                    }
                 }
             },
             scrimColor = Color.Black.copy(alpha = 0.2f)
@@ -81,7 +92,14 @@ fun HomeScreen(onLogout: () -> Unit = {}) {
                                             .background(Color.White),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text("CW", fontSize = 12.sp, color = GreenPrimary, fontWeight = FontWeight.Bold)
+                                        AsyncImage(
+                                            model = "https://i.ibb.co/ZpSpH21m/certiweb.png",
+                                            contentDescription = "Certiweb logo",
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(4.dp),
+                                            contentScale = ContentScale.Fit
+                                        )
                                     }
                                     Spacer(Modifier.width(8.dp))
                                     Text("CertiWeb", fontWeight = FontWeight.SemiBold)
@@ -418,19 +436,21 @@ private fun DrawerHeader(onClose: () -> Unit) {
 }
 
 @Composable
-private fun DrawerContent(onLogout: () -> Unit) {
+private fun DrawerContent(onNavigate: (String) -> Unit, onLogout: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(Modifier.height(8.dp))
         SectionTitle("NAVEGACIÓN")
         DrawerItem(
             icon = { Icon(Icons.Outlined.DirectionsCar, contentDescription = null, tint = GreenPrimary) },
             title = "Certified Cars for Sale",
-            subtitle = "Explora vehículos certificados"
+            subtitle = "Explora vehículos certificados",
+            onClick = { onNavigate("certifiedCars") }
         )
         DrawerItem(
             icon = { Icon(Icons.Outlined.AddCircleOutline, contentDescription = null, tint = GreenPrimary) },
             title = "Certify your Car",
-            subtitle = "Certifica tu vehículo"
+            subtitle = "Certifica tu vehículo",
+            onClick = { onNavigate("certifyCar") }
         )
 
         HorizontalDivider(color = DividerLight, modifier = Modifier.padding(vertical = 12.dp))
@@ -439,22 +459,26 @@ private fun DrawerContent(onLogout: () -> Unit) {
         DrawerItem(
             icon = { Icon(Icons.Default.Person, contentDescription = null, tint = GreenPrimary) },
             title = "Profile",
-            subtitle = "Gestiona tu perfil"
+            subtitle = "Gestiona tu perfil",
+            onClick = { onNavigate("profile") }
         )
         DrawerItem(
             icon = { Icon(Icons.Outlined.History, contentDescription = null, tint = GreenPrimary) },
             title = "History",
-            subtitle = "Historial de actividades"
+            subtitle = "Historial de actividades",
+            onClick = { onNavigate("history") }
         )
         DrawerItem(
             icon = { Icon(Icons.AutoMirrored.Outlined.HelpOutline, contentDescription = null, tint = GreenPrimary) },
             title = "Support",
-            subtitle = "Ayuda y soporte"
+            subtitle = "Ayuda y soporte",
+            onClick = { onNavigate("support") }
         )
         DrawerItem(
             icon = { Icon(Icons.Outlined.Article, contentDescription = null, tint = GreenPrimary) },
             title = "Terms of Use",
-            subtitle = "Términos y condiciones"
+            subtitle = "Términos y condiciones",
+            onClick = { onNavigate("termsOfUse") }
         )
 
         HorizontalDivider(color = DividerLight, modifier = Modifier.padding(vertical = 12.dp))
@@ -476,11 +500,12 @@ private fun SectionTitle(text: String) {
 }
 
 @Composable
-private fun DrawerItem(icon: @Composable () -> Unit, title: String, subtitle: String) {
+private fun DrawerItem(icon: @Composable () -> Unit, title: String, subtitle: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -493,7 +518,7 @@ private fun DrawerItem(icon: @Composable () -> Unit, title: String, subtitle: St
             Text(title, fontWeight = FontWeight.SemiBold)
             Text(subtitle, color = TextSecondary, fontSize = 12.sp)
         }
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = TextSecondary)
+        Icon(Icons.Filled.KeyboardArrowRight, contentDescription = null, tint = TextSecondary)
     }
 }
 
@@ -548,6 +573,6 @@ private fun LogoutItem(onLogout: () -> Unit) {
             Text("Logout", color = Color(0xFFD32F2F), fontWeight = FontWeight.SemiBold)
             Text("Cerrar sesión", color = Color(0xFFD32F2F), fontSize = 12.sp)
         }
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Color(0xFFD32F2F))
+        Icon(Icons.Filled.KeyboardArrowRight, contentDescription = null, tint = Color(0xFFD32F2F))
     }
 }

@@ -76,6 +76,13 @@
       "name": "Rodrigo Alcantara",
       "password": "123",
       "plan": "Free"
+    },
+    {
+      "email": "sebas@gmail.com",
+      "name": "Sebastian",
+      "password": "123456",
+      "plan": "Free",
+      "id": "K5V7NfB"
     }
   ],
   "reservations": [

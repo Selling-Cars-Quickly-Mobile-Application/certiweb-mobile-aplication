@@ -43,6 +43,8 @@ import kotlinx.coroutines.launch
 import coil.compose.AsyncImage
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
+import pe.edu.upc.certiweb_mobile_application.data.SessionManager
 // clickable ya importado arriba
 
 data class Car(val brand: String, val model: String)
@@ -625,6 +627,9 @@ private fun DrawerHeader(onClose: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .background(GreenPrimary)) {
+        val ctx = LocalContext.current
+        val session = remember { SessionManager(ctx.applicationContext) }
+        val userName = session.getCachedUser()?.name ?: "User"
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Box(
@@ -635,7 +640,7 @@ private fun DrawerHeader(onClose: () -> Unit) {
                 }
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("User", color = Color.White, fontWeight = FontWeight.SemiBold)
+                    Text(userName, color = Color.White, fontWeight = FontWeight.SemiBold)
                     Text("Menu", color = Color.White.copy(alpha = 0.9f), fontSize = 12.sp)
                 }
                 IconButton(onClick = onClose) {

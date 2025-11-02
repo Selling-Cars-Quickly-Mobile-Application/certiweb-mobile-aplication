@@ -67,7 +67,7 @@ fun AppNav() {
         composable("certifyCar") { CertifyCarScreen() }
         composable("profile") { ProfileScreen() }
         composable("history") { HistoryScreen() }
-        composable("support") { SupportScreen() }
+        composable("support") { SupportScreen(navController) }
         composable("termsOfUse") { TermsOfUseScreen() }
     }
 }

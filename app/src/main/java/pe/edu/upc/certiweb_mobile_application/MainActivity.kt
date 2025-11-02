@@ -39,10 +39,12 @@ class MainActivity : ComponentActivity() {
 fun AppNav() {
     val navController: NavHostController = rememberNavController()
     val vm = remember { AuthViewModel() }
+    val ctx = androidx.compose.ui.platform.LocalContext.current
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
             LoginScreen(vm, onLoggedIn = {
+                vm.state.value.user?.let { pe.edu.upc.certiweb_mobile_application.data.SessionManager(ctx.applicationContext).saveUser(it) }
                 navController.navigate("home") {
                     popUpTo("login") { inclusive = true }
                 }
@@ -50,6 +52,7 @@ fun AppNav() {
         }
         composable("register") {
             RegisterScreen(vm, onRegistered = {
+                vm.state.value.user?.let { pe.edu.upc.certiweb_mobile_application.data.SessionManager(ctx.applicationContext).saveUser(it) }
                 navController.navigate("home") {
                     popUpTo("register") { inclusive = true }
                 }
@@ -58,6 +61,7 @@ fun AppNav() {
         composable("home") {
             HomeScreen(navController = navController, onLogout = {
                 vm.logout()
+                pe.edu.upc.certiweb_mobile_application.data.SessionManager(ctx.applicationContext).clear()
                 navController.navigate("login") {
                     popUpTo("home") { inclusive = true }
                 }
@@ -65,9 +69,9 @@ fun AppNav() {
         }
         composable("certifiedCars") { CertifiedCarsScreen() }
         composable("certifyCar") { CertifyCarScreen() }
-        composable("profile") { ProfileScreen() }
+        composable("profile") { ProfileScreen(navController) }
         composable("history") { HistoryScreen() }
         composable("support") { SupportScreen(navController) }
-        composable("termsOfUse") { TermsOfUseScreen() }
+        composable("termsOfUse") { TermsOfUseScreen(navController) }
     }
 }

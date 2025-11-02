@@ -27,12 +27,12 @@ import pe.edu.upc.certiweb_mobile_application.ui.theme.*
 
 @Composable
 fun SupportScreen(navController: NavHostController) {
+    
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
         item {
-            // Encabezado con gradiente y icono de ayuda
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

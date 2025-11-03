@@ -12,13 +12,20 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
+        maven(url = uri("https://storage.googleapis.com/download.flutter.io"))
     }
 }
 
+val flutterInclude = File(
+    settingsDir.parentFile,
+    "certiweb_flutter_application/.android/include_flutter.groovy"
+)
+apply(from = flutterInclude)
+    
 rootProject.name = "certiweb-mobile-application"
 include(":app")
  

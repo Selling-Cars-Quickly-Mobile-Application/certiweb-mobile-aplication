@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ReservationApi {
     @Headers("Content-Type: application/json", "Accept: application/json")
@@ -16,6 +17,9 @@ interface ReservationApi {
 
     @GET("/reservations")
     suspend fun getAllReservations(): Response<List<Reservation>>
+
+    @GET("/reservations")
+    suspend fun getReservationsByUserId(@Query("userId") userId: String): Response<List<Reservation>>
 
     @GET("/reservations/{id}")
     suspend fun getReservationById(@Path("id") id: String): Response<Reservation>

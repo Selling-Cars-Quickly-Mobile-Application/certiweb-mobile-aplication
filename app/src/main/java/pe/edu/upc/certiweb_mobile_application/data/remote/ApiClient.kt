@@ -6,7 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "http://10.0.2.2:3000/" // emulator -> host
+    // En emulador Android, "localhost" apunta al emulador. Para alcanzar el host usa 10.0.2.2
+    private const val BASE_URL = "http://10.0.2.2:3000"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

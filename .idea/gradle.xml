@@ -22,6 +22,7 @@
           <set>
             <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/file_picker-8.3.7/android" />
             <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.32/android" />
+            <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.4.15/android" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/../certiweb_flutter_application/.android/Flutter" />

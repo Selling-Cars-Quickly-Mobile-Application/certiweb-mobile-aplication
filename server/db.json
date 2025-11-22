@@ -83,6 +83,13 @@
       "password": "123456",
       "plan": "Free",
       "id": "K5V7NfB"
+    },
+    {
+      "email": "pep@gmail.com",
+      "name": "Pedro",
+      "password": "123456",
+      "plan": "Free",
+      "id": "F-CkSMD"
     }
   ],
   "reservations": [
@@ -254,6 +261,32 @@
       "price": "50000",
       "status": "pending",
       "id": "mnxa1V1"
+    },
+    {
+      "userId": "2",
+      "reservationName": "Fernando Gago",
+      "reservationEmail": "xahid43956@uforks.com",
+      "imageUrl": "https://i.ibb.co/q8LNgVF/JPEG-20251114-225358-7723642817977008004.jpg",
+      "brand": "toyota",
+      "model": "RAV",
+      "licensePlate": "HBD-456",
+      "inspectionDateTime": "2025-11-17T13:00:00.000Z",
+      "price": "25000",
+      "status": "pending",
+      "id": "FXleVHb"
+    },
+    {
+      "userId": "F-CkSMD",
+      "reservationName": "Pedro",
+      "reservationEmail": "pep@gmail.com",
+      "imageUrl": "https://i.ibb.co/DD1WF7fy/JPEG-20251114-231956-2440931675250332659.jpg",
+      "brand": "toyota",
+      "model": "RAV",
+      "licensePlate": "HBF-345",
+      "inspectionDateTime": "2025-11-17T15:00:00.000Z",
+      "price": "50000",
+      "status": "pending",
+      "id": "MCH28Jz"
     }
   ],
   "admin_user": [

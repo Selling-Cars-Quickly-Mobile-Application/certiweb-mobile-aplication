@@ -40,61 +40,8 @@ class CertiwebApp : Application() {
 
         val engine = FlutterEngine(this)
         GeneratedPluginRegistrant.registerWith(engine)
-        engine.dartExecutor.executeDartEntrypoint(
-            DartExecutor.DartEntrypoint.createDefault()
-        )
-
-        val sessionManager = SessionManager(applicationContext)
-        val channel = MethodChannel(engine.dartExecutor.binaryMessenger, "reservation_channel")
-        Log.i("CertiwebApp", "MethodChannel 'reservation_channel' registrado en CertiwebApp")
-        channel.setMethodCallHandler { call, result ->
-            when (call.method) {
-                "getUserData" -> {
-                    Log.i("CertiwebApp", "Invocado getUserData desde Flutter")
-                    val u = sessionManager.getCachedUser()
-                    if (u != null) {
-                        val payload: HashMap<String, Any?> = hashMapOf(
-                            "id" to u.id,
-                            "name" to u.name,
-                            "email" to u.email
-                        )
-                        Log.i("CertiwebApp", "Devolviendo usuario cacheado: id=${u.id}")
-                        result.success(payload)
-                    } else {
-                        Log.w("CertiwebApp", "No hay usuario cacheado en SessionManager")
-                        result.error("NO_USER", "User not logged in", null)
-                    }
-                }
-                "getUserPrefs" -> {
-                    Log.i("CertiwebApp", "Invocado getUserPrefs desde Flutter (fallback)")
-                    val fp = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
-                    val email = fp.getString("flutter.user_email", null)
-                    if (!email.isNullOrEmpty()) {
-                        val id = fp.getString("flutter.user_id", "") ?: ""
-                        val name = fp.getString("flutter.user_name", "") ?: ""
-                        val payload: HashMap<String, Any?> = hashMapOf(
-                            "id" to id,
-                            "name" to name,
-                            "email" to email
-                        )
-                        Log.i("CertiwebApp", "Devolviendo usuario desde FlutterSharedPreferences: id=$id")
-                        result.success(payload)
-                    } else {
-                        Log.w("CertiwebApp", "FlutterSharedPreferences no contiene usuario")
-                        result.error("NO_USER_PREFS", "No user in FlutterSharedPreferences", null)
-                    }
-                }
-                "getReservationPrefill" -> {
-                    result.success(null)
-                }
-                "navigateToDashboard" -> {
-                    Log.i("CertiwebApp", "Invocado navigateToDashboard - No se puede manejar aquí")
-                    result.success(false)
-                }
-                else -> result.notImplemented()
-            }
-        }
-
         FlutterEngineCache.getInstance().put("reservation_engine", engine)
+
+        // Admin engine será inicializado bajo demanda desde AdminScreen
     }
 }

@@ -10,7 +10,8 @@ import pe.edu.upc.certiweb_mobile_application.data.model.User
 data class AuthState(
     val isLoading: Boolean = false,
     val user: User? = null,
-    val error: String? = null
+    val error: String? = null,
+    val isAdmin: Boolean = false
 )
 
 class AuthViewModel(private val repo: AuthRepository = AuthRepository()) : ViewModel() {
@@ -18,12 +19,24 @@ class AuthViewModel(private val repo: AuthRepository = AuthRepository()) : ViewM
         private set
 
     fun login(email: String, password: String) {
-        state.value = state.value.copy(isLoading = true, error = null)
+        state.value = state.value.copy(isLoading = true, error = null, isAdmin = false, user = null)
         viewModelScope.launch {
-            val result = repo.login(email, password)
-            state.value = result.fold(
-                onSuccess = { state.value.copy(isLoading = false, user = it) },
-                onFailure = { state.value.copy(isLoading = false, error = it.message) }
+            val adminResult = repo.loginAdmin(email, password)
+            adminResult.fold(
+                onSuccess = { isAdmin ->
+                    if (isAdmin) {
+                        state.value = state.value.copy(isLoading = false, isAdmin = true, user = null)
+                    } else {
+                        val result = repo.login(email, password)
+                        state.value = result.fold(
+                            onSuccess = { state.value.copy(isLoading = false, user = it, isAdmin = false) },
+                            onFailure = { state.value.copy(isLoading = false, error = it.message, isAdmin = false) }
+                        )
+                    }
+                },
+                onFailure = { e ->
+                    state.value = state.value.copy(isLoading = false, error = e.message)
+                }
             )
         }
     }
@@ -40,6 +53,6 @@ class AuthViewModel(private val repo: AuthRepository = AuthRepository()) : ViewM
     }
 
     fun logout() {
-        state.value = AuthState(isLoading = false, user = null, error = null)
+        state.value = AuthState(isLoading = false, user = null, error = null, isAdmin = false)
     }
 }

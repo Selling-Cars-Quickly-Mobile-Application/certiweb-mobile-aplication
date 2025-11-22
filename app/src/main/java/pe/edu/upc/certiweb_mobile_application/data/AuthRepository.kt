@@ -20,6 +20,18 @@ class AuthRepository {
         }
     }
 
+    suspend fun loginAdmin(email: String, password: String): Result<Boolean> {
+        return try {
+            val res = api.adminLogin(email, password)
+            if (res.isSuccessful) {
+                val admins = res.body().orEmpty()
+                Result.success(admins.isNotEmpty())
+            } else Result.failure(Exception("Admin login failed: ${res.code()}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun register(request: RegisterRequest): Result<User> {
         return try {
             val res = api.register(request)

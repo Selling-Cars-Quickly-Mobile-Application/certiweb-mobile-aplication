@@ -19,6 +19,7 @@ class ReservationFlutterActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        io.flutter.plugins.GeneratedPluginRegistrant.registerWith(flutterEngine)
 
         val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "reservation_channel")
         Log.i("ReservationFlutter", "MethodChannel 'reservation_channel' registrado en configureFlutterEngine")

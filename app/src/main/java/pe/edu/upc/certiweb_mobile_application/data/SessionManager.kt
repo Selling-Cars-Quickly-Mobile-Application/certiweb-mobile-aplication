@@ -27,6 +27,16 @@ class SessionManager(context: Context) {
         Log.i("SessionManager", "Datos espejados en FlutterSharedPreferences: id=${user.id}, email=${user.email}")
     }
 
+    fun saveAdmin(isAdmin: Boolean) {
+        prefs.edit()
+            .putBoolean("is_admin", isAdmin)
+            .apply()
+        flutterPrefs.edit()
+            .putBoolean("flutter.is_admin", isAdmin)
+            .apply()
+        Log.i("SessionManager", "Flag admin actualizado: $isAdmin")
+    }
+
     fun clear() {
         prefs.edit().clear().apply()
         flutterPrefs.edit().clear().apply()
@@ -43,4 +53,6 @@ class SessionManager(context: Context) {
         Log.i("SessionManager", "Usuario recuperado del cache: id=$id, email=$email")
         return User(id = id, name = name, email = email, plan = plan)
     }
+
+    fun isAdmin(): Boolean = prefs.getBoolean("is_admin", false)
 }

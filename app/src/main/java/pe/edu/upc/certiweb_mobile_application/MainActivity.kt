@@ -24,6 +24,7 @@ import pe.edu.upc.certiweb_mobile_application.ui.profile.ProfileScreen
 import pe.edu.upc.certiweb_mobile_application.ui.history.HistoryScreen
 import pe.edu.upc.certiweb_mobile_application.ui.support.SupportScreen
 import pe.edu.upc.certiweb_mobile_application.ui.termsofuse.TermsOfUseScreen
+import pe.edu.upc.certiweb_mobile_application.ui.admin.AdminScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,12 +41,23 @@ fun AppNav() {
     val navController: NavHostController = rememberNavController()
     val vm = remember { AuthViewModel() }
     val ctx = androidx.compose.ui.platform.LocalContext.current
+    val session = pe.edu.upc.certiweb_mobile_application.data.SessionManager(ctx.applicationContext)
+    val startDestination = when {
+        session.isAdmin() -> "admin"
+        session.getCachedUser() != null -> "home"
+        else -> "login"
+    }
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable("login") {
             LoginScreen(vm, onLoggedIn = {
                 vm.state.value.user?.let { pe.edu.upc.certiweb_mobile_application.data.SessionManager(ctx.applicationContext).saveUser(it) }
                 navController.navigate("home") {
+                    popUpTo("login") { inclusive = true }
+                }
+            }, onAdminLoggedIn = {
+                pe.edu.upc.certiweb_mobile_application.data.SessionManager(ctx.applicationContext).saveAdmin(true)
+                navController.navigate("admin") {
                     popUpTo("login") { inclusive = true }
                 }
             }, onNavigateRegister = { navController.navigate("register") })
@@ -67,6 +79,7 @@ fun AppNav() {
                 }
             })
         }
+        composable("admin") { AdminScreen() }
         composable("certifiedCars") { CertifiedCarsScreen() }
         composable("certifyCar") { CertifyCarScreen(navController) }
         composable("profile") { ProfileScreen(navController) }

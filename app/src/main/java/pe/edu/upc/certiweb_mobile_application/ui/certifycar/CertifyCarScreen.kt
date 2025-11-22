@@ -43,18 +43,22 @@ fun CertifyCarScreen(navController: NavHostController) {
         }
     }
 
-    LaunchedEffect(Unit) {
-        var engine = FlutterEngineCache.getInstance().get("reservation_engine")
-        if (engine == null) {
-            engine = FlutterEngine(context)
-            engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
-            FlutterEngineCache.getInstance().put("reservation_engine", engine)
-        }
+        LaunchedEffect(Unit) {
+            var engine = FlutterEngineCache.getInstance().get("reservation_engine")
+            if (engine == null) {
+                engine = FlutterEngine(context)
+                engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
+                FlutterEngineCache.getInstance().put("reservation_engine", engine)
+            } else {
+                if (!engine.dartExecutor.isExecutingDart) {
+                    engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault())
+                }
+            }
 
-        val intent = Intent(context, ReservationFlutterActivity::class.java)
-            .putExtra("cached_engine_id", "reservation_engine")
-        launcher.launch(intent)
-    }
+            val intent = Intent(context, ReservationFlutterActivity::class.java)
+                .putExtra("cached_engine_id", "reservation_engine")
+            launcher.launch(intent)
+        }
 
     
     Column(

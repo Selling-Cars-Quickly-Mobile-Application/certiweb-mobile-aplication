@@ -3,6 +3,7 @@ package pe.edu.upc.certiweb_mobile_application.data.remote
 import pe.edu.upc.certiweb_mobile_application.data.model.LoginRequest
 import pe.edu.upc.certiweb_mobile_application.data.model.RegisterRequest
 import pe.edu.upc.certiweb_mobile_application.data.model.User
+import pe.edu.upc.certiweb_mobile_application.data.model.AdminUser
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -17,6 +18,12 @@ interface AuthApi {
         @Query("email") email: String,
         @Query("password") password: String
     ): Response<List<User>>
+
+    @GET("/admin_user")
+    suspend fun adminLogin(
+        @Query("email") email: String,
+        @Query("password") password: String
+    ): Response<List<AdminUser>>
 
     // register: post to users
     @Headers("Content-Type: application/json", "Accept: application/json")

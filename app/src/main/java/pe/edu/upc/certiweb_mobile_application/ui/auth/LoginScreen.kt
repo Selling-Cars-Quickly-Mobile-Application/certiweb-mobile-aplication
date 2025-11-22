@@ -9,13 +9,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginScreen(vm: AuthViewModel, onLoggedIn: () -> Unit, onNavigateRegister: () -> Unit) {
+fun LoginScreen(vm: AuthViewModel, onLoggedIn: () -> Unit, onAdminLoggedIn: () -> Unit, onNavigateRegister: () -> Unit) {
     val state by vm.state
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     if (state.user != null) {
         LaunchedEffect(state.user) { onLoggedIn() }
+    }
+
+    if (state.isAdmin) {
+        LaunchedEffect(state.isAdmin) { onAdminLoggedIn() }
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
